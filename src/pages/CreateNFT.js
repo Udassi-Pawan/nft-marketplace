@@ -3,6 +3,7 @@ import { create as ipfsClient } from "ipfs-http-client";
 import { Buffer } from "buffer";
 import NFTInstance from "../blockchain/contractInstances/NFTInstance";
 import web3 from "../blockchain/web3";
+import MarketplaceInstance from "../blockchain/contractInstances/MarketplaceInstance";
 
 const projectId = process.env.REACT_APP_PROJECT_KEY;
 const projectSecret = process.env.REACT_APP_PROJECT_SECRET;
@@ -28,19 +29,15 @@ const CreateNFT = () => {
     });
     // if (name || image || description) return alert("Please fill empty fields!");
     const result1 = await client.add(image);
-    const imageIpfsAddress = result1.path;
-
+    const imageIpfsAddress = `${result1.path}`;
     const result2 = await client.add(
       JSON.stringify({ image: imageIpfsAddress, name, description })
     );
-    const nftIpfsAddress = `https://gateway.pinata.cloud/ipfs/${result2.path}`;
-    console.log(result1);
-    console.log(result2);
-    console.log(addresses);
-    const result3 = await NFTInstance.methods
-      .mintTo(addresses[0], nftIpfsAddress)
+    const nftIpfsAddress = `${result2.path}`;
+    const madeItem = await MarketplaceInstance.methods
+      .makeItem(NFTInstance._address, nftIpfsAddress)
       .send({ from: addresses[0] });
-    console.log(result3);
+    console.log(madeItem);
   };
 
   return (
