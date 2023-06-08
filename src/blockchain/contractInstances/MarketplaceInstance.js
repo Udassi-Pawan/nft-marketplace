@@ -250,7 +250,7 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_itemId",
+        "name": "_price",
         "type": "uint256",
       },
     ],
@@ -344,7 +344,7 @@ const abi = [
 
 const MarketplaceInstance = new web3.eth.Contract(
   abi,
-  "0x7a46aa78A431236a52cB0dE396522ae7E294359F"
+  "0x2CEAF0E154bB7dC88168A55d6cadb6508b53bf19"
 );
 
 export default MarketplaceInstance;

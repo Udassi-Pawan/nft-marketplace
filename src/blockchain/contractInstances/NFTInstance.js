@@ -386,10 +386,9 @@ const abi = [
     "type": "function",
   },
 ];
-
 const NFTInstance = new web3.eth.Contract(
   abi,
-  "0x0d3cE957B5cc7F457AEeaEF19733041854C682A0"
+  "0xde1C007CF730B2FB197933619802706E2C4cf886"
 );
 
 export default NFTInstance;
