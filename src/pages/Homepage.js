@@ -15,6 +15,8 @@ const Homepage = ({ mynfts }) => {
     (async function () {
       const addresses = await web3.eth.requestAccounts();
       const count = await MarketplaceInstance.methods.itemCount().call();
+      console.log(count);
+
       for (let i = 0; i < count; i++) {
         let now = await getItem(i);
         const curNFTInstance = CustomNFTInstance(now.nft);
@@ -27,10 +29,9 @@ const Homepage = ({ mynfts }) => {
         const { name, image, description } = nftUri;
         now = { ...now, name, image, description };
         setItems((e) => {
-          if (mynfts && now.owner != addresses[0]) {
-            return [...e];
-          }
-          return [...e, now];
+          if (mynfts && now.owner == addresses[0]) return [...e, now];
+          if (!mynfts && !now.sold) return [...e, now];
+          return [...e];
         });
       }
     })();
@@ -39,8 +40,6 @@ const Homepage = ({ mynfts }) => {
     };
   }, []);
 
-  console.log(items);
-
   return (
     <div>
       {items.map((i) => (
@@ -48,6 +47,7 @@ const Homepage = ({ mynfts }) => {
           <p>{i.tokenId}</p>
           <p>{i.name}</p>
           <p>{i.description}</p>
+          <p>{i.price}</p>
           <Link to={"/nft/" + i.nft + "-" + i.tokenId + "-" + i.itemId}>
             <img src={"https://ipfs.io/ipfs/" + i.image}></img>
           </Link>
