@@ -29,6 +29,7 @@ const Homepage = ({ mynfts }) => {
         const { name, image, description } = nftUri;
         now = { ...now, name, image, description };
         setItems((e) => {
+          return [...e, now];
           if (mynfts && now.owner == addresses[0]) return [...e, now];
           if (!mynfts && !now.sold) return [...e, now];
           return [...e];

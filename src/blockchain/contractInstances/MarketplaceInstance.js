@@ -207,6 +207,19 @@ const abi = [
         "name": "_itemId",
         "type": "uint256",
       },
+    ],
+    "name": "returnNFT",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_itemId",
+        "type": "uint256",
+      },
       {
         "internalType": "address",
         "name": "_to",
@@ -511,9 +524,10 @@ const abi = [
     "type": "function",
   },
 ];
+
 const MarketplaceInstance = new web3.eth.Contract(
   abi,
-  "0x8B885539c18C4F5f401816f58112c6BcC2d36bCc"
+  "0x3275FE34a4b9468a80C8831adA34CE3e08FEa3Fb"
 );
 
 export default MarketplaceInstance;

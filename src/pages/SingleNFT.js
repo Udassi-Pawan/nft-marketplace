@@ -28,11 +28,20 @@ const SingleNFT = () => {
 
   window.ethereum.on("accountsChanged", async function () {
     setAddresses(await web3.eth.requestAccounts());
+    const myBalance = await item?.nftTokenInstance.methods
+      .balanceOf(addresses[0])
+      .call();
+    setItem((i) => {
+      return { ...i, myNFTOwnership: myBalance };
+    });
   });
 
   const updateItem = async () => {
     const now = await MarketplaceInstance.methods.items(itemId).call();
-
+    addresses &&
+      setBalance(
+        await tokenParentInstance.methods.balanceOf(addresses[0]).call()
+      );
     const bidNumber = now.bidNumber;
     const bids = [];
     for (let i = 1; i <= bidNumber; i++) {
@@ -155,6 +164,7 @@ const SingleNFT = () => {
     await MarketplaceInstance.methods
       .listItem(item.itemId, listPrice)
       .send({ from: addresses[0] });
+    updateItem();
   };
 
   const bidHandler = async () => {
@@ -182,6 +192,7 @@ const SingleNFT = () => {
     await item.nftTokenInstance.methods
       .transfer(sendTokenTo, sendTokenValue)
       .send({ from: addresses[0] });
+    updateItem();
   };
   const nftTokenAccessHandler = async () => {
     await item.nftTokenInstance.methods
@@ -193,6 +204,7 @@ const SingleNFT = () => {
     await MarketplaceInstance.methods
       .listToken(itemId, listTokenPercentage, listTokenPrice)
       .send({ from: addresses[0] });
+    updateItem();
   };
 
   const tokenBidHandler = async (e, list) => {
@@ -201,6 +213,7 @@ const SingleNFT = () => {
     await MarketplaceInstance.methods
       .bidOnToken(itemId, list.lister, amount)
       .send({ from: addresses[0] });
+    updateItem();
   };
 
   const confirmTokenSaleHandler = async () => {
@@ -245,7 +258,7 @@ const SingleNFT = () => {
                       ))}
                   </div>
 
-                  {list.lister == addresses[0] && (
+                  {list.bids.length && list.lister == addresses[0] && (
                     <button onClick={confirmTokenSaleHandler}>
                       Confirm Token Sale
                     </button>
@@ -282,11 +295,15 @@ const SingleNFT = () => {
 
           {item.partial && (
             <div>
-              {item.balances?.map((bal) => (
-                <p key={bal.owner}>
-                  owner : {bal.owner} percentage : {bal.percentage}
-                </p>
-              ))}
+              {item.balances?.map((bal) =>
+                bal.percentage > 0 ? (
+                  <p p key={bal.owner}>
+                    owner : {bal.owner} percentage : {bal.percentage}
+                  </p>
+                ) : (
+                  ""
+                )
+              )}
             </div>
           )}
           <div>
@@ -319,7 +336,7 @@ const SingleNFT = () => {
               <button onClick={listHandler}>List</button>
             </div>
           )}
-          {!item.partial && item.owner != addresses[0] && (
+          {!item.partial && item.owner != addresses[0] && !item.sold && (
             <div>
               <input
                 placeholder="value"
@@ -352,7 +369,7 @@ const SingleNFT = () => {
             </div>
           )}
 
-          {item.myNFTOwnership && (
+          {item.myNFTOwnership > 0 && (
             <div>
               <input
                 placeholder="percentage"
@@ -366,11 +383,7 @@ const SingleNFT = () => {
             </div>
           )}
 
-          {/* {
-            item.myNFTOwnership && 
-          } */}
-
-          {item.myNFTOwnership && (
+          {item.myNFTOwnership > 0 && (
             <div>
               <input
                 placeholder="price"
