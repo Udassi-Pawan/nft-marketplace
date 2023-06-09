@@ -26,8 +26,49 @@ const abi = [
         "name": "_itemId",
         "type": "uint256",
       },
+      {
+        "internalType": "address",
+        "name": "_lister",
+        "type": "address",
+      },
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256",
+      },
+    ],
+    "name": "bidOnToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_itemId",
+        "type": "uint256",
+      },
     ],
     "name": "confirmSale",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_itemId",
+        "type": "uint256",
+      },
+      {
+        "internalType": "address",
+        "name": "_lister",
+        "type": "address",
+      },
+    ],
+    "name": "confirmTokenSale",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function",
@@ -46,6 +87,29 @@ const abi = [
       },
     ],
     "name": "listItem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_itemId",
+        "type": "uint256",
+      },
+      {
+        "internalType": "uint256",
+        "name": "_percent",
+        "type": "uint256",
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256",
+      },
+    ],
+    "name": "listToken",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function",
@@ -119,6 +183,19 @@ const abi = [
       },
     ],
     "name": "optOutSale",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_itemId",
+        "type": "uint256",
+      },
+    ],
+    "name": "partializeNFT",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function",
@@ -328,8 +405,38 @@ const abi = [
     "type": "function",
   },
   {
-    "inputs": [],
-    "name": "royalty",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256",
+      },
+    ],
+    "name": "nftTokenAddresses",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address",
+      },
+    ],
+    "stateMutability": "view",
+    "type": "function",
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256",
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address",
+      },
+    ],
+    "name": "tokenBidNumber",
     "outputs": [
       {
         "internalType": "uint256",
@@ -340,11 +447,73 @@ const abi = [
     "stateMutability": "view",
     "type": "function",
   },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256",
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address",
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256",
+      },
+    ],
+    "name": "tokenBids",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "bidder",
+        "type": "address",
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256",
+      },
+    ],
+    "stateMutability": "view",
+    "type": "function",
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256",
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address",
+      },
+    ],
+    "name": "tokenList",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "percentage",
+        "type": "uint256",
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256",
+      },
+    ],
+    "stateMutability": "view",
+    "type": "function",
+  },
 ];
-
 const MarketplaceInstance = new web3.eth.Contract(
   abi,
-  "0x2CEAF0E154bB7dC88168A55d6cadb6508b53bf19"
+  "0x8B885539c18C4F5f401816f58112c6BcC2d36bCc"
 );
 
 export default MarketplaceInstance;
