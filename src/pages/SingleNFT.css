@@ -1,3 +1,74 @@
-img {
+.single {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 3rem;
+}
+
+.single .image-modal .info * {
+  margin: 0;
+}
+
+.single img {
+  align-self: flex-end;
   height: 25rem;
+  border-radius: 1rem;
+  margin: 1rem;
+}
+
+.single .image-modal {
+  display: flex;
+  align-items: center;
+}
+
+.single .image-modal .info {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+.single .image-modal .info #desc {
+  font-weight: 400;
+}
+
+.form-item {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.single .full-bids {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.line {
+  height: 0.1rem;
+  width: 40%;
+  background-color: #aaa;
+  margin: 2rem 0;
+}
+
+.long {
+  width: 90%;
+}
+
+.single .list {
+  background-color: #ddd;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 1rem;
 }

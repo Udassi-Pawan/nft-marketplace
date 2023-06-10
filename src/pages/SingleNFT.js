@@ -8,6 +8,7 @@ import web3 from "../blockchain/web3";
 import tokenParentInstance from "../blockchain/contractInstances/tokenParentInstance";
 import CustomNFTTokenInstance from "../blockchain/contractInstances/CustomNFTTokenInstance";
 import "./SingleNFT.css";
+import { Button, Card, Input } from "antd";
 
 const nullAddr = "0x0000000000000000000000000000000000000000";
 
@@ -28,7 +29,7 @@ const SingleNFT = () => {
 
   window.ethereum.on("accountsChanged", async function () {
     setAddresses(await web3.eth.requestAccounts());
-    const myBalance = await item?.nftTokenInstance.methods
+    const myBalance = await item?.nftTokenInstance?.methods
       .balanceOf(addresses[0])
       .call();
     setItem((i) => {
@@ -64,10 +65,12 @@ const SingleNFT = () => {
         const percentage = await nftTokenInstance.methods
           .balanceOf(owner)
           .call();
-        balances.push({
-          owner,
-          percentage,
-        });
+        if (!balances.find((el) => el.owner == owner)) {
+          balances.push({
+            owner,
+            percentage,
+          });
+        }
         const curList = await MarketplaceInstance.methods
           .tokenList(itemId, owner)
           .call();
@@ -88,12 +91,14 @@ const SingleNFT = () => {
             });
           }
 
-          lists.push({
-            lister: owner,
-            price: curList.price,
-            percentage: curList.percentage,
-            bids,
-          });
+          if (!lists.find((l) => l.lister == owner)) {
+            lists.push({
+              lister: owner,
+              price: curList.price,
+              percentage: curList.percentage,
+              bids,
+            });
+          }
         }
         if (owner == (await web3.eth.requestAccounts())[0])
           now.myNFTOwnership = percentage;
@@ -226,179 +231,218 @@ const SingleNFT = () => {
   return (
     <>
       {item && (
-        <div>
-          <p> name: {item?.name}</p>
-          <p> itemId : {item?.itemId}</p>
-          <p> tokenId : {item?.tokenId}</p>
-          <h3> balance : {balance}</h3>
-          <p>ownership: {item.partial ? "partial" : "full"} </p>
-          {item.myNFTOwnership && <p> my ownership : {item.myNFTOwnership} </p>}
-          {!item.partial && <p> owner : {item.owner} </p>}
-
-          {item.lists && (
-            <div>
-              {item.lists.map((list) => (
-                <div key={list.lister}>
-                  <p>
-                    <b>lister: </b> {list.lister} <b>price :</b> {list.price}
-                    <b>percentage :</b> {list.percentage}
-                  </p>
-
-                  <div>
-                    <h4>bids:</h4>
-
-                    {list.bids &&
-                      list.bids.map((bid) => (
-                        <div key={bid.bidder}>
-                          <p>
-                            <b>bidder:</b> {bid.bidder} <b>value:</b>
-                            {bid.value}
-                          </p>
-                        </div>
-                      ))}
-                  </div>
-
-                  {list.bids.length && list.lister == addresses[0] && (
-                    <button onClick={confirmTokenSaleHandler}>
-                      Confirm Token Sale
-                    </button>
-                  )}
-
-                  {list.lister != addresses[0] && (
-                    <div>
-                      <input
-                        placeholder="amount"
-                        id={list.lister + list.price}
-                      ></input>
-                      <button
-                        onClick={(e) => {
-                          tokenAccessHandler(e, list);
-                        }}
-                        id={list.lister}
-                      >
-                        Allow token Access
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          tokenBidHandler(e, list);
-                        }}
-                        id={list.lister}
-                      >
-                        Bid
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
+        <div className="single">
+          <div className="image-modal">
+            <div className="info">
+              <p>
+                <b>Name:</b> {item?.name}
+              </p>
+              <p id="desc">
+                <b>About:</b> {item?.description}
+              </p>
+              <p>
+                <b>Ownership:</b> {item.partial ? "partial" : "full"}{" "}
+              </p>
             </div>
+            <img src={"https://ipfs.io/ipfs/" + item?.image}></img>
+          </div>
+
+          {!item.partial && (
+            <>
+              <p>
+                <b>Owner:</b> {item.owner}
+              </p>
+              {/* <h3> Your balance : {balance}</h3> */}
+              <p>
+                <b>For Sale?</b> {item.sold ? "No" : "Yes"}
+              </p>
+              {!item.sold && (
+                <p>
+                  <b>Price : </b> {item?.price}
+                </p>
+              )}
+
+              {item.bids && (
+                <div className="full-bids">
+                  <h2>Bids:</h2>
+                  {item.bids?.map((bid, ind) => (
+                    <div key={ind}>
+                      <p>
+                        <b>Bidder:</b> {bid.bidder} <b>Value:</b> {bid.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="controls">
+                {item.owner == addresses[0] && item.bidNumber > 0 && (
+                  <div className="center">
+                    <Button onClick={confirmSaleHandler}>
+                      Confirm Sale to highest bidder
+                    </Button>
+                  </div>
+                )}
+                {item.owner == addresses[0] && (
+                  <>
+                    <div className="form-item">
+                      <Input
+                        onChange={(e) => setSendTo(e.target.value)}
+                        placeholder="to"
+                      ></Input>
+                      <Button onClick={accessHandler}>Allow Access</Button>
+                      <Button onClick={sendHandler}>Send</Button>
+                    </div>
+                    <div className="form-item center">
+                      <Button onClick={accessHandler}>Allow Access</Button>
+                      <Button onClick={partializeHandler}>
+                        Partialize NFT
+                      </Button>
+                    </div>
+                  </>
+                )}
+                {item.owner == addresses[0] && item.sold && (
+                  <div className="form-item">
+                    <Input
+                      onChange={(e) => setListPrice(e.target.value)}
+                      placeholder="price"
+                    ></Input>
+                    <Button onClick={accessHandler}>Allow Access</Button>
+                    <Button onClick={listHandler}>List</Button>
+                  </div>
+                )}
+                {item.owner != addresses[0] && !item.sold && (
+                  <div className="form-item">
+                    <Input
+                      placeholder="Value"
+                      onChange={(e) => setBidValue(e.target.value)}
+                    />
+                    <Button onClick={tokenAccessHandler}>
+                      Allow Token Access
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        bidHandler(item, addresses);
+                      }}
+                    >
+                      Bid
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </>
           )}
 
           {item.partial && (
-            <div>
-              {item.balances?.map((bal) =>
-                bal.percentage > 0 ? (
-                  <p p key={bal.owner}>
-                    owner : {bal.owner} percentage : {bal.percentage}
-                  </p>
-                ) : (
-                  ""
-                )
+            <>
+              <h2>Owners:</h2>
+              {item.myNFTOwnership && (
+                <p> my ownership : {item.myNFTOwnership} </p>
               )}
-            </div>
-          )}
-          <div>
-            {item.bids?.map((bid, ind) => (
-              <div key={ind}>
-                <p>
-                  {bid.bidder} : {bid.value}
-                </p>
-              </div>
-            ))}
-          </div>
-          {!item.sold && <p> price : {item?.price}</p>}
-          {!item.partial && item.owner == addresses[0] && (
-            <div>
-              <input
-                onChange={(e) => setSendTo(e.target.value)}
-                placeholder="to"
-              ></input>
-              <button onClick={accessHandler}>Allow Access</button>
-              <button onClick={sendHandler}>Send</button>
-            </div>
-          )}
-          {!item.partial && item.owner == addresses[0] && item.sold && (
-            <div>
-              <input
-                onChange={(e) => setListPrice(e.target.value)}
-                placeholder="price"
-              ></input>
-              <button onClick={accessHandler}>Allow Access</button>
-              <button onClick={listHandler}>List</button>
-            </div>
-          )}
-          {!item.partial && item.owner != addresses[0] && !item.sold && (
-            <div>
-              <input
-                placeholder="value"
-                onChange={(e) => setBidValue(e.target.value)}
-              />
-              <button onClick={tokenAccessHandler}>allow token access</button>
-              <button
-                onClick={(e) => {
-                  bidHandler(item, addresses);
-                }}
-              >
-                bid
-              </button>
-            </div>
-          )}
-
-          {!item.partial &&
-            item.owner == addresses[0] &&
-            item.bidNumber > 0 && (
               <div>
-                <button onClick={confirmSaleHandler}>
-                  Confirm Sale to highest bidder
-                </button>
+                {item.balances?.map((bal) =>
+                  bal.percentage > 0 && bal.owner != addresses[0] ? (
+                    <p p key={bal.owner}>
+                      owner : {bal.owner} percentage : {bal.percentage}
+                    </p>
+                  ) : (
+                    ""
+                  )
+                )}
               </div>
-            )}
-          {!item.partial && item.owner == addresses[0] && (
-            <div>
-              <button onClick={accessHandler}>Allow Access</button>
-              <button onClick={partializeHandler}>Partialize NFT</button>
-            </div>
-          )}
+              <div className="line long"></div>
+              <h2>Listings for Sale</h2>
+              {item.lists && (
+                <div>
+                  {item.lists.map((list) => (
+                    <div key={list.lister} className="list center">
+                      <p>
+                        <b>lister: </b> {list.lister} <b>price :</b>{" "}
+                        {list.price}
+                        <b>percentage :</b> {list.percentage}
+                      </p>
 
-          {item.myNFTOwnership > 0 && (
-            <div>
-              <input
-                placeholder="percentage"
-                onChange={(e) => setSendTokenValue(e.target.value)}
-              ></input>
-              <input
-                placeholder="to"
-                onChange={(e) => setSendTokenTo(e.target.value)}
-              ></input>
-              <button onClick={sendNftTokenHandler}>Send</button>
-            </div>
-          )}
+                      <div className="center">
+                        <div>
+                          <h3>bids:</h3>
+                        </div>
+                        {list.bids &&
+                          list.bids.map((bid) => (
+                            <div key={bid.bidder}>
+                              <p>
+                                <b>bidder:</b> {bid.bidder} <b>value:</b>
+                                {bid.value}
+                              </p>
+                            </div>
+                          ))}
+                      </div>
 
-          {item.myNFTOwnership > 0 && (
-            <div>
-              <input
-                placeholder="price"
-                onChange={(e) => setListTokenPrice(e.target.value)}
-              ></input>
-              <input
-                placeholder="percentage"
-                onChange={(e) => setListTokenPercentage(e.target.value)}
-              ></input>
-              <button onClick={nftTokenAccessHandler}>Allow Access</button>
-              <button onClick={listNftTokenHandler}>List</button>
-            </div>
-          )}
+                      {list.lister != addresses[0] && (
+                        <div className="form-item">
+                          <Input
+                            placeholder="amount"
+                            id={list.lister + list.price}
+                          ></Input>
+                          <Button
+                            onClick={(e) => {
+                              tokenAccessHandler(e, list);
+                            }}
+                            id={list.lister}
+                          >
+                            Allow token Access
+                          </Button>
+                          <Button
+                            onClick={(e) => {
+                              tokenBidHandler(e, list);
+                            }}
+                            id={list.lister}
+                          >
+                            Bid
+                          </Button>
+                        </div>
+                      )}
 
-          <img src={"https://ipfs.io/ipfs/" + item?.image}></img>
+                      {list.lister == addresses[0] && (
+                        <Button onClick={confirmTokenSaleHandler}>
+                          Confirm Token Sale
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {item.myNFTOwnership > 0 && (
+                <>
+                  <div className="form-item">
+                    <Input
+                      placeholder="percentage"
+                      onChange={(e) => setSendTokenValue(e.target.value)}
+                    ></Input>
+                    <Input
+                      placeholder="to"
+                      onChange={(e) => setSendTokenTo(e.target.value)}
+                    ></Input>
+                    <Button onClick={sendNftTokenHandler}>Send</Button>
+                  </div>
+                  <div className="form-item">
+                    <Input
+                      placeholder="price"
+                      onChange={(e) => setListTokenPrice(e.target.value)}
+                    ></Input>
+                    <Input
+                      placeholder="percentage"
+                      onChange={(e) => setListTokenPercentage(e.target.value)}
+                    ></Input>
+                    <Button onClick={nftTokenAccessHandler}>
+                      Allow Access
+                    </Button>
+                    <Button onClick={listNftTokenHandler}>List</Button>
+                  </div>
+                </>
+              )}
+            </>
+          )}
         </div>
       )}
     </>

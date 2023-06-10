@@ -3,6 +3,11 @@ import MarketplaceInstance from "../blockchain/contractInstances/MarketplaceInst
 import web3 from "../blockchain/web3";
 import CustomNFTInstance from "../blockchain/contractInstances/CustomNFTInstance";
 import { Link } from "react-router-dom";
+import Layout, { Header } from "antd/es/layout/layout";
+import Navbar from "../components/Navbar";
+import { Card, Col } from "antd";
+import Meta from "antd/es/card/Meta";
+import "./Homepage.css";
 
 const getItem = async function (i) {
   return await MarketplaceInstance.methods.items(i).call();
@@ -42,19 +47,35 @@ const Homepage = ({ mynfts }) => {
   }, []);
 
   return (
-    <div>
-      {items.map((i) => (
-        <div key={i.image}>
-          <p>{i.tokenId}</p>
-          <p>{i.name}</p>
-          <p>{i.description}</p>
-          <p>{i.price}</p>
+    <Layout className="homepage-parent">
+      <div className="nft-cards">
+        {items.map((i) => (
+          // <div key={i.image}>
+          //   <p>{i.tokenId}</p>
+          //   <p>{i.name}</p>
+          //   <p>{i.description}</p>
+          //   <p>{i.price}</p>
+          //   <Link to={"/nft/" + i.nft + "-" + i.tokenId + "-" + i.itemId}>
+          //     <img src={"https://ipfs.io/ipfs/" + i.image}></img>
+          //   </Link>
+          // </div>
           <Link to={"/nft/" + i.nft + "-" + i.tokenId + "-" + i.itemId}>
-            <img src={"https://ipfs.io/ipfs/" + i.image}></img>
+            <Card
+              hoverable
+              style={{
+                maxWidth: 340,
+              }}
+              cover={
+                <img alt="example" src={"https://ipfs.io/ipfs/" + i.image} />
+              }
+              bordered={false}
+            >
+              <Meta title={i.name} description={i.description} />
+            </Card>
           </Link>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </Layout>
   );
 };
 

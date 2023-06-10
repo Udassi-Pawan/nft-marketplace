@@ -1,0 +1,12 @@
+.homepage-parent .nft-cards {
+  display: flex;
+  gap: 4rem;
+}
+
+.homepage-parent {
+  margin: 3rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  height: 100%;
+}
