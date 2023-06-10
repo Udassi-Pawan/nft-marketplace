@@ -5,16 +5,25 @@ import CreateNFT from "./pages/CreateNFT";
 import Homepage from "./pages/Homepage";
 import SingleNFT from "./pages/SingleNFT";
 import Tokens from "./pages/Tokens";
+import Layout, { Content, Header } from "antd/es/layout/layout";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/create" element={<CreateNFT />} />
-      <Route path="/mynfts" element={<Homepage mynfts={true} />} />
-      <Route path="/" element={<Homepage mynfts={false} />} />
-      <Route path="/nft/:id" element={<SingleNFT />} />
-      <Route path="/tokens" element={<Tokens />} />
-    </Routes>
+    <Layout>
+      <Header style={{ backgroundColor: "inherit" }}>
+        <Navbar></Navbar>
+      </Header>
+      <Content>
+        <Routes>
+          <Route path="/create" element={<CreateNFT />} />
+          <Route path="/mynfts" element={<Homepage mynfts={true} />} />
+          <Route path="/" element={<Homepage mynfts={false} />} />
+          <Route path="/nft/:id" element={<SingleNFT />} />
+          <Route path="/tokens" element={<Tokens />} />
+        </Routes>
+      </Content>
+    </Layout>
   );
 }
 
