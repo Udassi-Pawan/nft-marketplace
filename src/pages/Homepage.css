@@ -1,12 +1,17 @@
+body {
+  font-family: "Nunito", sans-serif;
+}
+
 .homepage-parent .nft-cards {
   display: flex;
   gap: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .homepage-parent {
   margin: 3rem;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
   height: 100%;
 }

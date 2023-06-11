@@ -34,31 +34,23 @@ const Homepage = ({ mynfts }) => {
         const { name, image, description } = nftUri;
         now = { ...now, name, image, description };
         setItems((e) => {
+          console.log(addresses, now.owner, mynfts);
+          if (mynfts && now.owner != addresses[0]) {
+            return [...e];
+          }
           return [...e, now];
-          if (mynfts && now.owner == addresses[0]) return [...e, now];
-          if (!mynfts && !now.sold) return [...e, now];
-          return [...e];
         });
       }
     })();
     return () => {
       setItems([]);
     };
-  }, []);
+  }, [mynfts]);
 
   return (
     <Layout className="homepage-parent">
       <div className="nft-cards">
         {items.map((i) => (
-          // <div key={i.image}>
-          //   <p>{i.tokenId}</p>
-          //   <p>{i.name}</p>
-          //   <p>{i.description}</p>
-          //   <p>{i.price}</p>
-          //   <Link to={"/nft/" + i.nft + "-" + i.tokenId + "-" + i.itemId}>
-          //     <img src={"https://ipfs.io/ipfs/" + i.image}></img>
-          //   </Link>
-          // </div>
           <Link to={"/nft/" + i.nft + "-" + i.tokenId + "-" + i.itemId}>
             <Card
               hoverable

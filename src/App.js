@@ -7,23 +7,32 @@ import SingleNFT from "./pages/SingleNFT";
 import Tokens from "./pages/Tokens";
 import Layout, { Content, Header } from "antd/es/layout/layout";
 import Navbar from "./components/Navbar";
-
+import LoadingSpinner from "./components/LoadingSpinner";
+import { MyContext } from "./MyContext";
+import { useState } from "react";
 function App() {
+  const [loading, setLoading] = useState();
   return (
-    <Layout>
-      <Header style={{ backgroundColor: "inherit" }}>
-        <Navbar></Navbar>
-      </Header>
-      <Content>
-        <Routes>
-          <Route path="/create" element={<CreateNFT />} />
-          <Route path="/mynfts" element={<Homepage mynfts={true} />} />
-          <Route path="/" element={<Homepage mynfts={false} />} />
-          <Route path="/nft/:id" element={<SingleNFT />} />
-          <Route path="/tokens" element={<Tokens />} />
-        </Routes>
-      </Content>
-    </Layout>
+    <MyContext.Provider value={{ loading, setLoading }}>
+      <Layout
+        style={{ width: "100%", height: "100vh", boxSizing: "border-box" }}
+      >
+        <LoadingSpinner>
+          <Header style={{ backgroundColor: "inherit" }}>
+            <Navbar></Navbar>
+          </Header>
+          <Content>
+            <Routes>
+              <Route path="/create" element={<CreateNFT />} />
+              <Route path="/mynfts" element={<Homepage mynfts={true} />} />
+              <Route path="/" element={<Homepage mynfts={false} />} />
+              <Route path="/nft/:id" element={<SingleNFT />} />
+              <Route path="/tokens" element={<Tokens />} />
+            </Routes>
+          </Content>
+        </LoadingSpinner>
+      </Layout>
+    </MyContext.Provider>
   );
 }
 

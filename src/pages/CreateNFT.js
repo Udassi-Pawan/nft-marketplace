@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { create as ipfsClient } from "ipfs-http-client";
 import { Buffer } from "buffer";
 import NFTInstance from "../blockchain/contractInstances/NFTInstance";
@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import { Button, Col, Form, Input, Layout, Modal, Row, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import "./CreateNFT.css";
+import { MyContext } from "../MyContext";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -23,6 +24,8 @@ const auth =
   "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
 
 const CreateNFT = () => {
+  const { setLoading } = useContext(MyContext);
+
   const [name, setName] = useState();
   const [image, setImage] = useState();
   const [description, setDescription] = useState();
@@ -60,7 +63,7 @@ const CreateNFT = () => {
   );
 
   const createHandler = async () => {
-    // return console.log(name, description);
+    setLoading(true);
     const addresses = await web3.eth.requestAccounts();
     const client = await ipfsClient({
       host: "ipfs.infura.io",
@@ -71,17 +74,20 @@ const CreateNFT = () => {
         authorization: auth,
       },
     });
-    // if (name || image || description) return alert("Please fill empty fields!");
-    const result1 = await client.add(image);
-    const imageIpfsAddress = `${result1.path}`;
-    const result2 = await client.add(
-      JSON.stringify({ image: imageIpfsAddress, name, description })
-    );
-    const nftIpfsAddress = `${result2.path}`;
-    const madeItem = await MarketplaceInstance.methods
-      .makeItem(NFTInstance._address, nftIpfsAddress)
-      .send({ from: addresses[0] });
-    console.log(madeItem);
+    try {
+      const result1 = await client.add(image);
+      const imageIpfsAddress = `${result1.path}`;
+      const result2 = await client.add(
+        JSON.stringify({ image: imageIpfsAddress, name, description })
+      );
+      const nftIpfsAddress = `${result2.path}`;
+      await MarketplaceInstance.methods
+        .makeItem(NFTInstance._address, nftIpfsAddress)
+        .send({ from: addresses[0] });
+    } catch (e) {
+      setLoading();
+    }
+    setLoading();
   };
 
   return (

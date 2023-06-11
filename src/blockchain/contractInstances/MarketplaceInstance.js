@@ -135,48 +135,6 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_bidTokenAddress",
-        "type": "address",
-      },
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor",
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "itemId",
-        "type": "uint256",
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "nft",
-        "type": "address",
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256",
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address",
-      },
-    ],
-    "name": "NFTAdded",
-    "type": "event",
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "_itemId",
         "type": "uint256",
@@ -232,47 +190,38 @@ const abi = [
     "type": "function",
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "itemId",
+        "name": "_itemId",
         "type": "uint256",
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "nft",
-        "type": "address",
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "_percentage",
         "type": "uint256",
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256",
-      },
-      {
-        "indexed": true,
         "internalType": "address",
-        "name": "owner",
-        "type": "address",
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "buyer",
+        "name": "_to",
         "type": "address",
       },
     ],
-    "name": "Sold",
-    "type": "event",
+    "name": "sendNFTTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_bidTokenAddress",
+        "type": "address",
+      },
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor",
   },
   {
     "inputs": [],
@@ -439,9 +388,9 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256",
+        "type": "address",
       },
       {
         "internalType": "address",
@@ -463,9 +412,9 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256",
+        "type": "address",
       },
       {
         "internalType": "address",
@@ -497,9 +446,9 @@ const abi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256",
+        "type": "address",
       },
       {
         "internalType": "address",
@@ -527,7 +476,7 @@ const abi = [
 
 const MarketplaceInstance = new web3.eth.Contract(
   abi,
-  "0x3275FE34a4b9468a80C8831adA34CE3e08FEa3Fb"
+  "0x358b3BBf91F0BaA834Be4F1f831259Aa6C818d62"
 );
 
 export default MarketplaceInstance;

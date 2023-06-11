@@ -29,6 +29,9 @@ const Navbar = () => {
           <Menu.Item key="/">
             <Link to="/"> Marketplace </Link>
           </Menu.Item>
+          <Menu.Item key="/mynfts">
+            <Link to="/mynfts"> My NFTs </Link>
+          </Menu.Item>
           <Menu.Item key="/tokens" style={{ justifySelf: "end" }}>
             <Link to="/tokens"> Tokens </Link>
           </Menu.Item>

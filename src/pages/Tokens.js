@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import web3 from "../blockchain/web3";
 import bidTokenInstance from "../blockchain/contractInstances/bidTokenInstance";
 import tokenParentInstance from "../blockchain/contractInstances/tokenParentInstance";
 import MarketplaceInstance from "../blockchain/contractInstances/MarketplaceInstance";
 import "./Tokens.css";
 import { Button, Form, Input } from "antd";
+import { MyContext } from "../MyContext";
 
 const Tokens = () => {
   const [addresses, setAddresses] = useState();
   const [balance, setBalance] = useState();
+
+  const [buyValue, setBuyValue] = useState();
+  const [sellValue, setSellValue] = useState();
+  const { setLoading } = useContext(MyContext);
 
   useEffect(() => {
     (async function () {
@@ -20,21 +25,35 @@ const Tokens = () => {
     })();
   }, [addresses && addresses[0], balance]);
 
-  const [buyValue, setBuyValue] = useState();
-  const [sellValue, setSellValue] = useState();
+  async function smartCall(functionName, context, args) {
+    setLoading(true);
+    var args = Array.prototype.slice.call(arguments, 2);
+    var namespaces = functionName.split(".");
+    var func = namespaces.pop();
+    for (var i = 0; i < namespaces.length; i++) {
+      context = context[namespaces[i]];
+    }
+    try {
+      await context[func].apply(context, args).send({ from: addresses[0] });
+    } catch (e) {
+      setLoading();
+      alert("Transaction Failed!");
+    }
+    setLoading();
+  }
+
   const buyHandler = async () => {
-    await bidTokenInstance.methods
-      .buy()
-      .send({ from: addresses[0], value: buyValue });
+    setLoading(true);
+    try {
+      await bidTokenInstance.methods
+        .buy()
+        .send({ from: addresses[0], value: buyValue });
+    } catch (e) {
+      setLoading();
+    }
+    setLoading();
   };
-  const accessHandler = async () => {
-    await tokenParentInstance.methods
-      .increaseAllowance(bidTokenInstance._address, sellValue)
-      .send({ from: addresses[0] });
-  };
-  const sellHandler = async () => {
-    await bidTokenInstance.methods.sell(sellValue).send({ from: addresses[0] });
-  };
+
   return (
     <div className="token">
       {addresses && <h2> Current Account: {addresses[0]}</h2>}
@@ -55,10 +74,25 @@ const Tokens = () => {
           onChange={(e) => setSellValue(e.target.value)}
           placeholder="value"
         ></Input>
-        <Button type="primary" onClick={accessHandler}>
+        <Button
+          type="primary"
+          onClick={(e) =>
+            smartCall(
+              "methods.increaseAllowance",
+              tokenParentInstance,
+              bidTokenInstance._address,
+              sellValue
+            )
+          }
+        >
           Allow Access
         </Button>
-        <Button type="primary" onClick={sellHandler}>
+        <Button
+          type="primary"
+          onClick={(e) =>
+            smartCall("methods.sell", bidTokenInstance, sellValue)
+          }
+        >
           Sell
         </Button>
       </div>
