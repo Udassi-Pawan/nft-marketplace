@@ -5,11 +5,39 @@ import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import { useState } from "react";
 const items = [
-  { label: <Link to="/home">Marketplace</Link>, key: "/home" },
-  { label: <Link to="/mynfts"> My NFTs </Link>, key: "/mynfts" },
-  { label: <Link to="/create">Create New</Link>, key: "/create" },
-  { label: <Link to="/tokens">bidTokens</Link>, key: "/tokens" },
-  ,
+  {
+    label: (
+      <Link key="/home" to="/home">
+        Marketplace
+      </Link>
+    ),
+    key: "/home",
+  },
+  {
+    label: (
+      <Link key="mynfts" to="/mynfts">
+        {" "}
+        My NFTs{" "}
+      </Link>
+    ),
+    key: "/mynfts",
+  },
+  {
+    label: (
+      <Link key="/create" to="/create">
+        Create New
+      </Link>
+    ),
+    key: "/create",
+  },
+  {
+    label: (
+      <Link key="/tokens" to="/tokens">
+        bidTokens
+      </Link>
+    ),
+    key: "/tokens",
+  },
 ];
 const Navbar = () => {
   const url = window.location.pathname;

@@ -14,7 +14,7 @@
     "moralis": "^2.22.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.11.2",
+    "react-router-dom": "^6.12.1",
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.8",
     "use-deep-compare-effect": "^1.8.1",
