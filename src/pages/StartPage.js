@@ -7,7 +7,7 @@ import { Button } from "antd";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Navbar from "../components/Navbar";
 import Layout, { Content, Header } from "antd/es/layout/layout";
-
+import { Link } from "react-router-dom";
 const StartPage = () => {
   const navigate = useNavigate();
   const [acc, setAcc] = useState();
@@ -33,6 +33,7 @@ const StartPage = () => {
     <>
       <LoadingSpinner>
         <div className="desclaimer-parent">
+          <Link to="/create">create</Link>
           <h1>NFT Marketplace</h1>
           <h3>
             Please install and connect metamask using sepolia testnet to
