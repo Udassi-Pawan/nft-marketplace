@@ -6,6 +6,7 @@ import MarketplaceInstance from "../blockchain/contractInstances/MarketplaceInst
 import "./Tokens.css";
 import { Button, Form, Input } from "antd";
 import { MyContext } from "../MyContext";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Tokens = () => {
   const [addresses, setAddresses] = useState();
@@ -13,7 +14,7 @@ const Tokens = () => {
 
   const [buyValue, setBuyValue] = useState();
   const [sellValue, setSellValue] = useState();
-  const { setLoading } = useContext(MyContext);
+  const { setLoading, loading } = useContext(MyContext);
 
   useEffect(() => {
     (async function () {
@@ -23,7 +24,7 @@ const Tokens = () => {
           await tokenParentInstance.methods.balanceOf(addresses[0]).call()
         );
     })();
-  }, [addresses && addresses[0], balance]);
+  }, [addresses && addresses[0], balance, loading]);
 
   async function smartCall(functionName, context, args) {
     setLoading(true);
@@ -55,65 +56,67 @@ const Tokens = () => {
   };
 
   return (
-    <div className="token">
-      {addresses && <h2> Current Account: {addresses[0]}</h2>}
-      <h2> Current bidToken balance: {balance}</h2>
-      <div className="item">
-        <Form.Item>
+    <LoadingSpinner>
+      <div className="token">
+        {addresses && <h2> Current Account: {addresses[0]}</h2>}
+        <h2> Current bidToken balance: {balance}</h2>
+        <div className="item">
+          <Form.Item>
+            <Input
+              onChange={(e) => setBuyValue(e.target.value)}
+              placeholder="value"
+            ></Input>
+          </Form.Item>
+          <Button type="primary" onClick={buyHandler}>
+            Buy
+          </Button>
+        </div>
+        <div className="item">
           <Input
-            onChange={(e) => setBuyValue(e.target.value)}
+            onChange={(e) => setSellValue(e.target.value)}
             placeholder="value"
           ></Input>
-        </Form.Item>
-        <Button type="primary" onClick={buyHandler}>
-          Buy
-        </Button>
+          <Button
+            type="primary"
+            onClick={async (e) => {
+              if (
+                (await tokenParentInstance.methods.balanceOf(addresses[0])) <
+                sellValue
+              )
+                return alert("Not enough tokens to sell!");
+              smartCall(
+                "methods.increaseAllowance",
+                tokenParentInstance,
+                bidTokenInstance._address,
+                sellValue
+              );
+            }}
+          >
+            Allow Access
+          </Button>
+          <Button
+            type="primary"
+            onClick={async (e) => {
+              if (
+                (await tokenParentInstance.methods
+                  .balanceOf(addresses[0])
+                  .call()) < sellValue
+              )
+                return alert("Not enough tokens to sell!");
+              if (
+                (await tokenParentInstance.methods
+                  .allowance(addresses[0], bidTokenInstance._address)
+                  .call()) < sellValue
+              )
+                return alert("Please allow access to tokens to sell!");
+              smartCall("methods.sell", bidTokenInstance, sellValue);
+            }}
+          >
+            Sell
+          </Button>
+        </div>
       </div>
-      <div className="item">
-        <Input
-          onChange={(e) => setSellValue(e.target.value)}
-          placeholder="value"
-        ></Input>
-        <Button
-          type="primary"
-          onClick={async (e) => {
-            if (
-              (await tokenParentInstance.methods.balanceOf(addresses[0])) <
-              sellValue
-            )
-              return alert("Not enough tokens to sell!");
-            smartCall(
-              "methods.increaseAllowance",
-              tokenParentInstance,
-              bidTokenInstance._address,
-              sellValue
-            );
-          }}
-        >
-          Allow Access
-        </Button>
-        <Button
-          type="primary"
-          onClick={async (e) => {
-            if (
-              (await tokenParentInstance.methods
-                .balanceOf(addresses[0])
-                .call()) < sellValue
-            )
-              return alert("Not enough tokens to sell!");
-            if (
-              (await tokenParentInstance.methods
-                .allowance(addresses[0], bidTokenInstance._address)
-                .call()) < sellValue
-            )
-              return alert("Please allow access to tokens to sell!");
-            smartCall("methods.sell", bidTokenInstance, sellValue);
-          }}
-        >
-          Sell
-        </Button>
-      </div>
-    </div>
+    </LoadingSpinner>
   );
 };
 

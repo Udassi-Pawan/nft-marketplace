@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import { Card, Col } from "antd";
 import Meta from "antd/es/card/Meta";
 import "./Homepage.css";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const getItem = async function (i) {
   return await MarketplaceInstance.methods.items(i).call();
@@ -48,27 +49,29 @@ const Homepage = ({ mynfts }) => {
   }, [mynfts]);
 
   return (
-    <Layout className="homepage-parent">
-      <div className="nft-cards">
-        {items.map((i) => (
-          <Link to={"/nft/" + i.nft + "-" + i.tokenId + "-" + i.itemId}>
-            <Card
-              hoverable
-              style={{
-                maxWidth: 340,
-              }}
-              cover={
-                <img alt="example" src={"https://ipfs.io/ipfs/" + i.image} />
-              }
-              bordered={false}
-            >
-              <Meta title={i.name} description={i.description} />
-            </Card>
-          </Link>
-        ))}
-        {items.length == 0 && <h1>Mint your First NFT now!</h1>}
-      </div>
-    </Layout>
+    <LoadingSpinner>
+      <Layout className="homepage-parent">
+        <div className="nft-cards">
+          {items.map((i) => (
+            <Link to={"/nft/" + i.nft + "-" + i.tokenId + "-" + i.itemId}>
+              <Card
+                hoverable
+                style={{
+                  maxWidth: 340,
+                }}
+                cover={
+                  <img alt="example" src={"https://ipfs.io/ipfs/" + i.image} />
+                }
+                bordered={false}
+              >
+                <Meta title={i.name} description={i.description} />
+              </Card>
+            </Link>
+          ))}
+          {items.length == 0 && <h1>Mint your First NFT now!</h1>}
+        </div>
+      </Layout>
+    </LoadingSpinner>
   );
 };
 

@@ -90,7 +90,6 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
         .send({ from: addresses[0] });
     } catch (e) {
       alert("Transaction failed!");
-      setLoading();
     }
     setLoading();
   };
@@ -105,9 +104,11 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
       return alert("Please get enough bidTokens to bid on item.");
     }
     if (
-      (await tokenParentInstance.methods
-        .allowance(addresses[0], MarketplaceInstance._address)
-        .call()) < amount
+      Number(
+        await tokenParentInstance.methods
+          .allowance(addresses[0], MarketplaceInstance._address)
+          .call()
+      ) < Number(amount)
     ) {
       return alert("Please allow access to enough bidTokens to bid on item.");
     }
@@ -118,7 +119,6 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
         .send({ from: addresses[0] });
     } catch (e) {
       alert("Transaction failed!");
-      setLoading();
     }
     setLoading();
   };
@@ -131,7 +131,6 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
         .send({ from: addresses[0] });
     } catch (e) {
       alert("Transaction failed!");
-      setLoading();
     }
     setLoading();
   };
@@ -155,7 +154,6 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
         .send({ from: addresses[0] });
     } catch (e) {
       alert("Transaction failed!");
-      setLoading();
     }
     setLoading();
   };

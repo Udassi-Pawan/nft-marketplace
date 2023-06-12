@@ -12,6 +12,7 @@ import { Button, Card, Input } from "antd";
 import Partial from "../components/Partial";
 import { MyContext } from "../MyContext";
 import bidTokenInstance from "../blockchain/contractInstances/bidTokenInstance";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const nullAddr = "0x0000000000000000000000000000000000000000";
 
@@ -163,92 +164,151 @@ const SingleNFT = () => {
 
   return (
     <>
-      {item && (
-        <div className="single">
-          <div className="image-modal">
-            <div className="info">
-              <h1>{item?.name}</h1>
-              <p id="desc" className="center">
-                {item?.description}
-              </p>
-              <p>
-                <b>Ownership:</b> {item.partial ? "partial" : "full"}{" "}
-              </p>
-            </div>
-            <img src={"https://ipfs.io/ipfs/" + item?.image}></img>
-          </div>
-
-          {!item.partial && (
-            <>
-              <div className="impartial-info flex ">
-                <p>
-                  <u>
-                    <b>Owner:</b> {item.owner}
-                  </u>
+      <LoadingSpinner>
+        {item && (
+          <div className="single">
+            <div className="image-modal">
+              <div className="info">
+                <h1>{item?.name}</h1>
+                <p id="desc" className="center">
+                  {item?.description}
                 </p>
                 <p>
-                  <b>For Sale?</b> {item.sold ? "No" : "Yes"}
+                  <b>Ownership:</b> {item.partial ? "partial" : "full"}{" "}
                 </p>
-                {!item.sold && (
-                  <p>
-                    <b>Price : </b> {item?.price}
-                  </p>
-                )}
               </div>
+              <img src={"https://ipfs.io/ipfs/" + item?.image}></img>
+            </div>
 
-              {item.bids?.length > 0 && (
-                <div className="full-bids">
-                  <h2>Bids:</h2>
-                  {item.bids?.map((bid, ind) => (
-                    <div key={ind}>
-                      <p>
-                        <b>Bidder:</b> {bid.bidder} <b>Value:</b> {bid.value}
-                      </p>
-                    </div>
-                  ))}
+            {!item.partial && (
+              <>
+                <div className="impartial-info flex ">
+                  <p>
+                    <u>
+                      <b>Owner:</b> {item.owner}
+                    </u>
+                  </p>
+                  <p>
+                    <b>For Sale?</b> {item.sold ? "No" : "Yes"}
+                  </p>
+                  {!item.sold && (
+                    <p>
+                      <b>Price : </b> {item?.price}
+                    </p>
+                  )}
                 </div>
-              )}
-              <h3 className="your-balance">
-                <b> Your bidToken Balance: </b>
-                {balance}
-              </h3>
-              <div className="controls center">
-                <div className="line long"></div>
-                {item.owner == addresses[0] && (
-                  <Button
-                    onClick={(e) =>
-                      smartCall(
-                        "methods.setApprovalForAll",
-                        NFTInstance,
-                        MarketplaceInstance._address,
-                        true
-                      )
-                    }
-                  >
-                    Allow Access
-                  </Button>
+
+                {item.bids?.length > 0 && (
+                  <div className="full-bids">
+                    <h2>Bids:</h2>
+                    {item.bids?.map((bid, ind) => (
+                      <div key={ind}>
+                        <p>
+                          <b>Bidder:</b> {bid.bidder} <b>Value:</b> {bid.value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 )}
-                {item.owner == addresses[0] && item.bidNumber > 0 && (
-                  <div className="center">
+                <h3 className="your-balance">
+                  <b> Your bidToken Balance: </b>
+                  {balance}
+                </h3>
+                <div className="controls center">
+                  <div className="line long"></div>
+                  {item.owner == addresses[0] && (
                     <Button
                       onClick={(e) =>
                         smartCall(
-                          "methods.confirmSale",
-                          MarketplaceInstance,
-                          itemId
+                          "methods.setApprovalForAll",
+                          NFTInstance,
+                          MarketplaceInstance._address,
+                          true
                         )
                       }
                     >
-                      Confirm Sale to highest bidder
+                      Allow Access
                     </Button>
-                  </div>
-                )}
-                {item.owner == addresses[0] && (
-                  <div className="center">
+                  )}
+                  {item.owner == addresses[0] && item.bidNumber > 0 && (
+                    <div className="center">
+                      <Button
+                        onClick={(e) =>
+                          smartCall(
+                            "methods.confirmSale",
+                            MarketplaceInstance,
+                            itemId
+                          )
+                        }
+                      >
+                        Confirm Sale to highest bidder
+                      </Button>
+                    </div>
+                  )}
+                  {item.owner == addresses[0] && (
+                    <div className="center">
+                      <div className="form-item">
+                        <Input
+                          onChange={(e) => setSendTo(e.target.value)}
+                          placeholder="to"
+                        ></Input>
+                        <Button
+                          onClick={async (e) => {
+                            if (
+                              !(await NFTInstance.methods
+                                .isApprovedForAll(
+                                  item.owner,
+                                  MarketplaceInstance._address
+                                )
+                                .call())
+                            ) {
+                              return alert(
+                                "Please allow access to the NFT first!"
+                              );
+                            }
+                            smartCall(
+                              "methods.sendNFT",
+                              MarketplaceInstance,
+                              item.itemId,
+                              sendTo
+                            );
+                          }}
+                        >
+                          Send
+                        </Button>
+                      </div>
+                      <div className="form-item">
+                        <Button
+                          onClick={async (e) => {
+                            if (
+                              !(await NFTInstance.methods
+                                .isApprovedForAll(
+                                  item.owner,
+                                  MarketplaceInstance._address
+                                )
+                                .call())
+                            ) {
+                              return alert(
+                                "Please allow access to the NFT first!"
+                              );
+                            }
+                            smartCall(
+                              "methods.partializeNFT",
+                              MarketplaceInstance,
+                              itemId
+                            );
+                          }}
+                        >
+                          Partialize NFT
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  {item.owner == addresses[0] && item.sold && (
                     <div className="form-item">
                       <Input
-                        onChange={(e) => setSendTo(e.target.value)}
-                        placeholder="to"
+                        onChange={(e) => setListPrice(e.target.value)}
+                        placeholder="price"
                       ></Input>
                       <Button
                         onClick={async (e) => {
@@ -265,144 +325,95 @@ const SingleNFT = () => {
                             );
                           }
                           smartCall(
-                            "methods.sendNFT",
+                            "methods.listItem",
                             MarketplaceInstance,
                             item.itemId,
-                            sendTo
+                            listPrice
                           );
                         }}
                       >
-                        Send
+                        List on Marketplace
                       </Button>
                     </div>
+                  )}
+                  {item.owner != addresses[0] && !item.sold && (
                     <div className="form-item">
+                      <Input
+                        placeholder="Value"
+                        onChange={(e) => setBidValue(e.target.value)}
+                      />
                       <Button
                         onClick={async (e) => {
                           if (
-                            !(await NFTInstance.methods
-                              .isApprovedForAll(
-                                item.owner,
-                                MarketplaceInstance._address
-                              )
-                              .call())
-                          ) {
+                            Number(
+                              await tokenParentInstance.methods
+                                .balanceOf(addresses[0])
+                                .call()
+                            ) < Number(bidValue)
+                          )
                             return alert(
-                              "Please allow access to the NFT first!"
+                              "Please get enough bidTokens to bid on item."
                             );
-                          }
                           smartCall(
-                            "methods.partializeNFT",
-                            MarketplaceInstance,
-                            itemId
+                            "methods.approve",
+                            tokenParentInstance,
+                            MarketplaceInstance._address,
+                            bidValue
                           );
                         }}
                       >
-                        Partialize NFT
+                        Allow Token Access
+                      </Button>
+                      <Button
+                        onClick={async (e) => {
+                          if (
+                            Number(
+                              await tokenParentInstance.methods
+                                .balanceOf(addresses[0])
+                                .call()
+                            ) < Number(bidValue)
+                          )
+                            return alert(
+                              "Please get enough bidTokens to bid on item."
+                            );
+                          if (
+                            Number(
+                              await tokenParentInstance.methods
+                                .allowance(
+                                  addresses[0],
+                                  MarketplaceInstance._address
+                                )
+                                .call()
+                            ) < Number(bidValue)
+                          )
+                            return alert(
+                              "Please allow access to bidTokens to bid on item."
+                            );
+                          smartCall(
+                            "methods.bidItem",
+                            MarketplaceInstance,
+                            itemId,
+                            bidValue
+                          );
+                        }}
+                      >
+                        Bid
                       </Button>
                     </div>
-                  </div>
-                )}
-                {item.owner == addresses[0] && item.sold && (
-                  <div className="form-item">
-                    <Input
-                      onChange={(e) => setListPrice(e.target.value)}
-                      placeholder="price"
-                    ></Input>
-                    <Button
-                      onClick={async (e) => {
-                        if (
-                          !(await NFTInstance.methods
-                            .isApprovedForAll(
-                              item.owner,
-                              MarketplaceInstance._address
-                            )
-                            .call())
-                        ) {
-                          return alert("Please allow access to the NFT first!");
-                        }
-                        smartCall(
-                          "methods.listItem",
-                          MarketplaceInstance,
-                          item.itemId,
-                          listPrice
-                        );
-                      }}
-                    >
-                      List on Marketplace
-                    </Button>
-                  </div>
-                )}
-                {item.owner != addresses[0] && !item.sold && (
-                  <div className="form-item">
-                    <Input
-                      placeholder="Value"
-                      onChange={(e) => setBidValue(e.target.value)}
-                    />
-                    <Button
-                      onClick={async (e) => {
-                        if (
-                          (await tokenParentInstance.methods
-                            .balanceOf(addresses[0])
-                            .call()) < bidValue
-                        )
-                          return alert(
-                            "Please get enough bidTokens to bid on item."
-                          );
-                        smartCall(
-                          "methods.approve",
-                          tokenParentInstance,
-                          MarketplaceInstance._address,
-                          bidValue
-                        );
-                      }}
-                    >
-                      Allow Token Access
-                    </Button>
-                    <Button
-                      onClick={async (e) => {
-                        if (
-                          (await tokenParentInstance.methods
-                            .balanceOf(addresses[0])
-                            .call()) < bidValue
-                        )
-                          return alert(
-                            "Please get enough bidTokens to bid on item."
-                          );
-                        if (
-                          (await tokenParentInstance.methods
-                            .allowance(
-                              addresses[0],
-                              MarketplaceInstance._address
-                            )
-                            .call()) < bidValue
-                        )
-                          return alert(
-                            "Please allow access to bidTokens to bid on item."
-                          );
-                        smartCall(
-                          "methods.bidItem",
-                          MarketplaceInstance,
-                          itemId,
-                          bidValue
-                        );
-                      }}
-                    >
-                      Bid
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
+                  )}
+                </div>
+              </>
+            )}
 
-          <Partial
-            item={item}
-            addresses={addresses}
-            balance={balance}
-            updateItem={updateItem}
-          ></Partial>
-        </div>
-      )}
+            <Partial
+              item={item}
+              addresses={addresses}
+              balance={balance}
+              updateItem={updateItem}
+            ></Partial>
+          </div>
+        )}
+      </LoadingSpinner>
     </>
   );
 };

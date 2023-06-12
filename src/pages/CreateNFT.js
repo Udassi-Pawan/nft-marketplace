@@ -9,6 +9,7 @@ import { Button, Col, Form, Input, Layout, Modal, Row, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import "./CreateNFT.css";
 import { MyContext } from "../MyContext";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -91,7 +92,7 @@ const CreateNFT = () => {
   };
 
   return (
-    <>
+    <LoadingSpinner>
       <div className="create-parent">
         <h2>Enter name, description and image of nft to mint. </h2>
         <Form.Item
@@ -159,7 +160,7 @@ const CreateNFT = () => {
           Create NFT
         </Button>
       </div>
-    </>
+    </LoadingSpinner>
   );
 };
 

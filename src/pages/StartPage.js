@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { MyContext } from "../MyContext";
 import "./StartPage.css";
 import { Button } from "antd";
+import LoadingSpinner from "../components/LoadingSpinner";
+import Navbar from "../components/Navbar";
+import Layout, { Content, Header } from "antd/es/layout/layout";
 
 const StartPage = () => {
   const navigate = useNavigate();
@@ -27,13 +30,18 @@ const StartPage = () => {
     }
   };
   return (
-    <div className="desclaimer-parent">
-      <h1>NFT Marketplace</h1>
-      <h3>
-        Please install and connect metamask using sepolia testnet to continue
-      </h3>
-      <Button onClick={clickHandler}>Continue</Button>;
-    </div>
+    <>
+      <LoadingSpinner>
+        <div className="desclaimer-parent">
+          <h1>NFT Marketplace</h1>
+          <h3>
+            Please install and connect metamask using sepolia testnet to
+            continue
+          </h3>
+          <Button onClick={clickHandler}>Continue</Button>;
+        </div>
+      </LoadingSpinner>
+    </>
   );
 };
 
