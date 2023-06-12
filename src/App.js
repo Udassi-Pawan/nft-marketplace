@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import CreateNFT from "./pages/CreateNFT";
 import Homepage from "./pages/Homepage";
 import SingleNFT from "./pages/SingleNFT";
@@ -16,14 +16,16 @@ function App() {
   const [loading, setLoading] = useState();
   return (
     <MyContext.Provider value={{ loading, setLoading }}>
-      <Routes>
-        <Route path="/create" exact index element={<CreateNFT />} />
-        <Route path="/mynfts" exact element={<Homepage mynfts={true} />} />
-        <Route path="/home" exact element={<Homepage mynfts={false} />} />
-        <Route path="/nft/:id" exact element={<SingleNFT />} />
-        <Route path="/tokens" exact element={<Tokens />} />
-        <Route path="/*" element={<StartPage />} />
-      </Routes>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/create" exact index element={<CreateNFT />} />
+          <Route path="/mynfts" exact element={<Homepage mynfts={true} />} />
+          <Route path="/home" exact element={<Homepage mynfts={false} />} />
+          <Route path="/nft/:id" exact element={<SingleNFT />} />
+          <Route path="/tokens" exact element={<Tokens />} />
+          <Route path="/*" element={<StartPage />} />
+        </Routes>
+      </BrowserRouter>
     </MyContext.Provider>
   );
 }
