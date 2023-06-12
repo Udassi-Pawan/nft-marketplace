@@ -22,7 +22,8 @@
 .single .image-modal {
   display: flex;
   justify-content: center;
-  gap: 0;
+  gap: 2rem;
+  align-items: center;
 }
 
 .single .image-modal .info {
@@ -75,6 +76,7 @@
   background-color: #ddd;
   padding: 1rem;
   border-radius: 1rem;
+  margin: 1rem 0;
 }
 
 Input {
@@ -104,6 +106,10 @@ Input {
   align-items: center;
 }
 
+Input {
+  size: 1rem;
+}
+
 @media only screen and (max-width: 700px) {
   html {
     font-size: 80%;
@@ -114,10 +120,33 @@ Input {
   html {
     font-size: 50%;
   }
+  .list {
+    font-size: 1.3rem;
+  }
 }
 
 @media only screen and (max-width: 480px) {
   html {
     font-size: 30%;
+  }
+  #desc {
+    font-size: 1.8rem;
+  }
+  .list p {
+    font-size: 3rem;
+  }
+  .form-item,
+  .gap {
+    flex-direction: column;
+    margin: 6rem;
+  }
+  Menu {
+    font-size: 1rem;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .list {
+    font-size: 1rem;
   }
 }

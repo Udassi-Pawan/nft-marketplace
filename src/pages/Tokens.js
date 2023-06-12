@@ -76,22 +76,39 @@ const Tokens = () => {
         ></Input>
         <Button
           type="primary"
-          onClick={(e) =>
+          onClick={async (e) => {
+            if (
+              (await tokenParentInstance.methods.balanceOf(addresses[0])) <
+              sellValue
+            )
+              return alert("Not enough tokens to sell!");
             smartCall(
               "methods.increaseAllowance",
               tokenParentInstance,
               bidTokenInstance._address,
               sellValue
-            )
-          }
+            );
+          }}
         >
           Allow Access
         </Button>
         <Button
           type="primary"
-          onClick={(e) =>
-            smartCall("methods.sell", bidTokenInstance, sellValue)
-          }
+          onClick={async (e) => {
+            if (
+              (await tokenParentInstance.methods
+                .balanceOf(addresses[0])
+                .call()) < sellValue
+            )
+              return alert("Not enough tokens to sell!");
+            if (
+              (await tokenParentInstance.methods
+                .allowance(addresses[0], bidTokenInstance._address)
+                .call()) < sellValue
+            )
+              return alert("Please allow access to tokens to sell!");
+            smartCall("methods.sell", bidTokenInstance, sellValue);
+          }}
         >
           Sell
         </Button>

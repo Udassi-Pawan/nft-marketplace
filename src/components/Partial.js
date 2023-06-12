@@ -19,6 +19,17 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
   const { setLoading } = useContext(MyContext);
 
   const sendNftTokenHandler = async () => {
+    if (
+      Number(
+        await item.nftTokenInstance.methods
+          .allowance(addresses[0], MarketplaceInstance._address)
+          .call()
+      ) < sendTokenValue
+    ) {
+      return alert(
+        "Please approve access to nft ownership to perform function."
+      );
+    }
     setLoading(true);
     try {
       await MarketplaceInstance.methods
@@ -45,10 +56,16 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
 
   const tokenAccessHandler = async (e, list) => {
     const amount = document.getElementById(list.lister + list.price).value;
+    const perc = await tokenParentInstance.methods
+      .balanceOf(addresses[0])
+      .call();
+    if (Number(perc) < Number(amount)) {
+      return alert("Please get enough bidTokens to bid on item.");
+    }
     setLoading(true);
     try {
-      return await tokenParentInstance.methods
-        .increaseAllowance(MarketplaceInstance._address, amount)
+      await tokenParentInstance.methods
+        .approve(MarketplaceInstance._address, amount)
         .send({ from: addresses[0] });
     } catch (e) {
       alert("Transaction failed!");
@@ -58,6 +75,14 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
   };
 
   const listNftTokenHandler = async () => {
+    const perc = await item.nftTokenInstance.methods
+      .allowance(addresses[0], MarketplaceInstance._address)
+      .call();
+    if (Number(perc) < Number(listTokenPercentage)) {
+      return alert(
+        "Please approve access to nft ownership to perform function."
+      );
+    }
     setLoading(true);
     try {
       await MarketplaceInstance.methods
@@ -73,6 +98,19 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
   const tokenBidHandler = async (e, list) => {
     const lister = e.target.id;
     const amount = document.getElementById(list.lister + list.price).value;
+    if (
+      Number(await tokenParentInstance.methods.balanceOf(addresses[0]).call()) <
+      Number(amount)
+    ) {
+      return alert("Please get enough bidTokens to bid on item.");
+    }
+    if (
+      (await tokenParentInstance.methods
+        .allowance(addresses[0], MarketplaceInstance._address)
+        .call()) < amount
+    ) {
+      return alert("Please allow access to enough bidTokens to bid on item.");
+    }
     setLoading(true);
     try {
       await MarketplaceInstance.methods
@@ -99,6 +137,17 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
   };
 
   const redeemNFTHandler = async () => {
+    if (
+      Number(
+        await item.nftTokenInstance.methods
+          .allowance(addresses[0], MarketplaceInstance._address)
+          .call()
+      ) < 100
+    ) {
+      return alert(
+        "Please approve access to nft ownership to perform function."
+      );
+    }
     setLoading(true);
     try {
       await MarketplaceInstance.methods
@@ -120,7 +169,7 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
             <h2 style={{ margin: "1rem" }}>Owners</h2>
             {item.myNFTOwnership > 0 && (
               <p>
-                <b> my ownership :</b> {item.myNFTOwnership}
+                <b> my ownership :</b> {item.myNFTOwnership} percent
               </p>
             )}
             <div>

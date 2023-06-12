@@ -66,6 +66,7 @@ const Homepage = ({ mynfts }) => {
             </Card>
           </Link>
         ))}
+        {items.length == 0 && <h1>Mint your First NFT now!</h1>}
       </div>
     </Layout>
   );

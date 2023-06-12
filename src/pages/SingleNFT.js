@@ -11,6 +11,7 @@ import "./SingleNFT.css";
 import { Button, Card, Input } from "antd";
 import Partial from "../components/Partial";
 import { MyContext } from "../MyContext";
+import bidTokenInstance from "../blockchain/contractInstances/bidTokenInstance";
 
 const nullAddr = "0x0000000000000000000000000000000000000000";
 
@@ -128,8 +129,8 @@ const SingleNFT = () => {
       setLoading();
       alert("Transaction Failed!");
     }
-    setLoading();
     updateItem();
+    setLoading();
   }
 
   useEffect(() => {
@@ -250,27 +251,51 @@ const SingleNFT = () => {
                         placeholder="to"
                       ></Input>
                       <Button
-                        onClick={(e) =>
+                        onClick={async (e) => {
+                          if (
+                            !(await NFTInstance.methods
+                              .isApprovedForAll(
+                                item.owner,
+                                MarketplaceInstance._address
+                              )
+                              .call())
+                          ) {
+                            return alert(
+                              "Please allow access to the NFT first!"
+                            );
+                          }
                           smartCall(
                             "methods.sendNFT",
                             MarketplaceInstance,
                             item.itemId,
                             sendTo
-                          )
-                        }
+                          );
+                        }}
                       >
                         Send
                       </Button>
                     </div>
                     <div className="form-item">
                       <Button
-                        onClick={(e) =>
+                        onClick={async (e) => {
+                          if (
+                            !(await NFTInstance.methods
+                              .isApprovedForAll(
+                                item.owner,
+                                MarketplaceInstance._address
+                              )
+                              .call())
+                          ) {
+                            return alert(
+                              "Please allow access to the NFT first!"
+                            );
+                          }
                           smartCall(
                             "methods.partializeNFT",
                             MarketplaceInstance,
                             itemId
-                          )
-                        }
+                          );
+                        }}
                       >
                         Partialize NFT
                       </Button>
@@ -284,16 +309,26 @@ const SingleNFT = () => {
                       placeholder="price"
                     ></Input>
                     <Button
-                      onClick={(e) =>
+                      onClick={async (e) => {
+                        if (
+                          !(await NFTInstance.methods
+                            .isApprovedForAll(
+                              item.owner,
+                              MarketplaceInstance._address
+                            )
+                            .call())
+                        ) {
+                          return alert("Please allow access to the NFT first!");
+                        }
                         smartCall(
                           "methods.listItem",
                           MarketplaceInstance,
                           item.itemId,
                           listPrice
-                        )
-                      }
+                        );
+                      }}
                     >
-                      List
+                      List on Marketplace
                     </Button>
                   </div>
                 )}
@@ -304,26 +339,53 @@ const SingleNFT = () => {
                       onChange={(e) => setBidValue(e.target.value)}
                     />
                     <Button
-                      onClick={(e) =>
+                      onClick={async (e) => {
+                        if (
+                          (await tokenParentInstance.methods
+                            .balanceOf(addresses[0])
+                            .call()) < bidValue
+                        )
+                          return alert(
+                            "Please get enough bidTokens to bid on item."
+                          );
                         smartCall(
-                          "methods.increaseAllowance",
-                          MarketplaceInstance,
+                          "methods.approve",
+                          tokenParentInstance,
                           MarketplaceInstance._address,
                           bidValue
-                        )
-                      }
+                        );
+                      }}
                     >
                       Allow Token Access
                     </Button>
                     <Button
-                      onClick={(e) =>
+                      onClick={async (e) => {
+                        if (
+                          (await tokenParentInstance.methods
+                            .balanceOf(addresses[0])
+                            .call()) < bidValue
+                        )
+                          return alert(
+                            "Please get enough bidTokens to bid on item."
+                          );
+                        if (
+                          (await tokenParentInstance.methods
+                            .allowance(
+                              addresses[0],
+                              MarketplaceInstance._address
+                            )
+                            .call()) < bidValue
+                        )
+                          return alert(
+                            "Please allow access to bidTokens to bid on item."
+                          );
                         smartCall(
                           "methods.bidItem",
                           MarketplaceInstance,
                           itemId,
                           bidValue
-                        )
-                      }
+                        );
+                      }}
                     >
                       Bid
                     </Button>

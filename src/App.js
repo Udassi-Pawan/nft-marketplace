@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { MyContext } from "./MyContext";
 import { useState } from "react";
+import StartPage from "./pages/StartPage";
 function App() {
   const [loading, setLoading] = useState();
   return (
@@ -25,7 +26,8 @@ function App() {
             <Routes>
               <Route path="/create" element={<CreateNFT />} />
               <Route path="/mynfts" element={<Homepage mynfts={true} />} />
-              <Route path="/" element={<Homepage mynfts={false} />} />
+              <Route path="/" exact element={<StartPage />} />
+              <Route path="/home" element={<Homepage mynfts={false} />} />
               <Route path="/nft/:id" element={<SingleNFT />} />
               <Route path="/tokens" element={<Tokens />} />
             </Routes>

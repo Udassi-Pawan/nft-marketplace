@@ -91,73 +91,75 @@ const CreateNFT = () => {
   };
 
   return (
-    <div className="create-parent">
-      <h2>Enter name, description and image of nft to mint. </h2>
-      <Form.Item
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-        label="Name"
-        name="name"
-        rules={[
-          {
-            required: true,
-            message: "Please input name for NFT!",
-          },
-        ]}
-      >
-        <Input
-          className="form-input"
-          onChange={(e) => setName(e.target.value)}
-        />
-      </Form.Item>
-
-      <Form.Item
-        label="Description"
-        name="description"
-        rules={[
-          {
-            required: true,
-            message: "Please input your password!",
-          },
-        ]}
-      >
-        <Input
-          className="form-input"
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </Form.Item>
-
-      <div>
-        <Upload
-          listType="picture-card"
-          onPreview={handlePreview}
-          onChange={handleChange}
+    <>
+      <div className="create-parent">
+        <h2>Enter name, description and image of nft to mint. </h2>
+        <Form.Item
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+          label="Name"
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: "Please input name for NFT!",
+            },
+          ]}
         >
-          {image == null ? uploadButton : null}
-        </Upload>
-        <Modal
-          open={previewOpen}
-          title={previewTitle}
-          footer={null}
-          onCancel={handleCancel}
-        >
-          <img
-            alt="example"
-            style={{
-              width: "100%",
-            }}
-            src={previewImage}
+          <Input
+            className="form-input"
+            onChange={(e) => setName(e.target.value)}
           />
-        </Modal>
-      </div>
+        </Form.Item>
 
-      <Button type="primary" onClick={createHandler}>
-        Create NFT
-      </Button>
-    </div>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[
+            {
+              required: true,
+              message: "Please input your password!",
+            },
+          ]}
+        >
+          <Input
+            className="form-input"
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </Form.Item>
+
+        <div>
+          <Upload
+            listType="picture-card"
+            onPreview={handlePreview}
+            onChange={handleChange}
+          >
+            {image == null ? uploadButton : null}
+          </Upload>
+          <Modal
+            open={previewOpen}
+            title={previewTitle}
+            footer={null}
+            onCancel={handleCancel}
+          >
+            <img
+              alt="example"
+              style={{
+                width: "100%",
+              }}
+              src={previewImage}
+            />
+          </Modal>
+        </div>
+
+        <Button type="primary" onClick={createHandler}>
+          Create NFT
+        </Button>
+      </div>
+    </>
   );
 };
 
