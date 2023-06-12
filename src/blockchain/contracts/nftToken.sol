@@ -1,31 +1,32 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.18;
 
+
 interface ERC20 {
     function balanceOf(address _owner) external returns (uint256 balance);
     function transfer(address _to, uint256 value) external returns (bool success);
     function transferFrom(address _from, address _to, uint256 value) external returns (bool success);
     function approve(address _spender, uint256 _value) external returns (bool success);
-    function increaseAllowance(address _spender, uint256 _value) external returns (bool success);
     function allowance(address _owner, address _spender) external returns (uint256 remaining);
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
 
-contract Token is ERC20 {
+
+contract nftToken is ERC20 {
     uint totalSupply;
     string public symbol;
     string public  name;
     uint8 public decimals;
-    uint public exchangeRate;
+    mapping (uint => address) public owners;
+    uint public ownerCount;
 
-
-    constructor(uint _totalSupply, string memory _name, string memory _symbol, address _mintAddress) {
-        symbol = _symbol;
-        name = _name;
-        totalSupply = _totalSupply;
-        exchangeRate = 1;
-        balances[_mintAddress] = _totalSupply;
+    constructor(address _mintAddress) {
+        symbol = "nftT";
+        name = "nftToken";
+        totalSupply = 100;
+        balances[_mintAddress] = totalSupply;
+        owners[ownerCount++] = _mintAddress;
     }
 
     mapping (address => uint) balances;
@@ -44,19 +45,15 @@ contract Token is ERC20 {
          allowances[msg.sender][_spender] = _value;
         return true;
      }
-     
-     function increaseAllowance (address _spender, uint256 _value) public returns (bool success) {
-         require(balanceOf(msg.sender)>=_value);
-         allowances[msg.sender][_spender] += _value;
-        return true;
-     }
-     
   function transfer(address _to, uint value) public returns (bool success) {
       require(balanceOf(msg.sender)>=value);
       balances[msg.sender] -= value;
       balances[_to] += value;
+      if(balanceOf(_to)==value) {
+      owners[ownerCount++] = _to;}
       return true;
   }
+    
     function transferFrom(address _from, address _to, uint256 value) public returns (bool success)
  {
     require(balanceOf(_from)>=value);
@@ -64,30 +61,11 @@ contract Token is ERC20 {
       balances[_from] -= value;
       balances[_to] += value;
       allowances[_from][msg.sender] -= value;
+      if(balanceOf(_to)==value) {
+      owners[ownerCount++] = _to;}
       return true;
  } 
+    
 
-}
 
-contract DEX1 {
- Token public bidToken ;
- constructor() {
-        bidToken = new Token(10000000000000000000000000,"bidToken","bd",address(this));
-    }
-    function buy () payable public {
-        uint exR = bidToken.exchangeRate();
-        uint amountTobuy = msg.value;
-        uint tokenAmount = amountTobuy*exR;
-        uint dexBalance = bidToken.balanceOf(address(this));
-        require(amountTobuy>0);
-        require(dexBalance>=tokenAmount);
-        bidToken.transfer(msg.sender,tokenAmount);
-    }
-
-    function sell(uint amount) public {
-            require(amount > 0, "You need to sell at least some tokens");
-            uint256 allowance = bidToken.allowance(msg.sender, address(this));
-            require(allowance>=amount);
-            bidToken.transferFrom(msg.sender,address(this),amount);
-    }
 }

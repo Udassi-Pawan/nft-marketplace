@@ -476,7 +476,7 @@ const abi = [
 
 const MarketplaceInstance = new web3.eth.Contract(
   abi,
-  "0x358b3BBf91F0BaA834Be4F1f831259Aa6C818d62"
+  "0x4aF3aF659e40Db27C5482761BE41415c53551b3D"
 );
 
 export default MarketplaceInstance;
