@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Righteous&display=swap");
+
+.desclaimer-parent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.desclaimer-parent button {
+  width: 40%;
+}
+
+.desclaimer-parent h1 {
+  font-size: 9rem;
+  font-family: "Righteous", cursive;
+  background-color: rgb(175, 211, 227);
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 5rem 0;
+  text-align: center;
+}
+
+.desclaimer-parent h3 {
+  font-size: 2rem;
+  margin-top: 2rem;
+  opacity: 0.6;
+  text-overflow: clip;
+}
+
+.desclaimer-parent Button,
+.desclaimer-parent Button:hover {
+  background-color: rgb(175, 211, 227);
+}
