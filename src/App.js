@@ -17,12 +17,12 @@ function App() {
   return (
     <MyContext.Provider value={{ loading, setLoading }}>
       <Routes>
-        <Route path="/" element={<StartPage />} />
-        <Route path="/create" element={<CreateNFT />} />
-        <Route path="/mynfts" element={<Homepage mynfts={true} />} />
-        <Route path="/home" element={<Homepage mynfts={false} />} />
-        <Route path="/nft/:id" element={<SingleNFT />} />
-        <Route path="/tokens" element={<Tokens />} />
+        <Route path="/" index element={<StartPage />} />
+        <Route path="/create" index element={<CreateNFT />} />
+        <Route path="/mynfts" index element={<Homepage mynfts={true} />} />
+        <Route path="/home" index element={<Homepage mynfts={false} />} />
+        <Route path="/nft/:id" index element={<SingleNFT />} />
+        <Route path="/tokens" index element={<Tokens />} />
       </Routes>
     </MyContext.Provider>
   );
