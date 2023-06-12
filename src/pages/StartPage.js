@@ -33,7 +33,6 @@ const StartPage = () => {
     <>
       <LoadingSpinner>
         <div className="desclaimer-parent">
-          <Link to="/create">create</Link>
           <h1>NFT Marketplace</h1>
           <h3>
             Please install and connect metamask using sepolia testnet to
