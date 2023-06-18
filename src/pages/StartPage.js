@@ -22,11 +22,18 @@ const StartPage = () => {
     })();
   }, []);
   const clickHandler = async () => {
-    if (acc && acc[0]) {
+    const network = await web3.eth.net.getId();
+    console.log(network);
+    if (acc && acc[0] && network == "11155111") {
       navigate("/home");
+    } else if (!(acc && acc[0])) {
+      navigate("/home");
+      return alert("Some functions might not work without metamask.");
     } else {
       navigate("/home");
-      alert("Some functions might not work without metamask.");
+      return alert(
+        "Some functions might not work on network other than sepolia."
+      );
     }
   };
   return (

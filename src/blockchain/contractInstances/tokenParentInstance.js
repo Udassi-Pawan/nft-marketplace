@@ -276,7 +276,9 @@ const abi = [
   },
 ];
 
-const address = await bidTokenInstance.methods.bidToken().call();
-
-const tokenParentInstance = new web3.eth.Contract(abi, address);
+let tokenParentInstance;
+try {
+  const address = await bidTokenInstance.methods.bidToken().call();
+  tokenParentInstance = new web3.eth.Contract(abi, address);
+} catch (e) {}
 export default tokenParentInstance;
