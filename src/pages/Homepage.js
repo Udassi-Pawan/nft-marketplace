@@ -19,7 +19,10 @@ const Homepage = ({ mynfts }) => {
 
   useEffect(() => {
     (async function () {
-      const addresses = await web3.eth.requestAccounts();
+      let addresses = [];
+      try {
+        addresses = await web3.eth.requestAccounts();
+      } catch (e) {}
       const count = await MarketplaceInstance.methods.itemCount().call();
       console.log(count);
 
