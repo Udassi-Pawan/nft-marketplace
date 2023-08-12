@@ -11,7 +11,7 @@ import { MyContext } from "../MyContext";
 
 const nullAddr = "0x0000000000000000000000000000000000000000";
 
-const Partial = ({ item, addresses, updateItem, balance }) => {
+const Partial = ({ item, addresses, balance }) => {
   const [sendTokenValue, setSendTokenValue] = useState();
   const [sendTokenTo, setSendTokenTo] = useState();
   const [listTokenPercentage, setListTokenPercentage] = useState();
@@ -114,6 +114,7 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
     }
     setLoading(true);
     try {
+      console.log("bid", item.itemId, list.lister, amount);
       await MarketplaceInstance.methods
         .bidOnToken(item.itemId, list.lister, amount)
         .send({ from: addresses[0] });
@@ -172,7 +173,8 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
             )}
             <div>
               {item.balances?.map((bal) =>
-                bal.percentage > 0 && bal.owner != addresses[0] ? (
+                bal.percentage > 0 &&
+                (!addresses || bal.owner != addresses[0]) ? (
                   <p className="gap" key={bal.owner}>
                     <b> owner:</b> {bal.owner}
                     <b>percentage:</b>
@@ -185,10 +187,12 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
             </div>
           </div>
           <div className="line long"></div>
-          <h3 className="your-balance">
-            <b> Your bidToken Balance: </b>
-            {balance}
-          </h3>
+          {addresses && (
+            <h3 className="your-balance">
+              <b> Your bidToken Balance: </b>
+              {balance}
+            </h3>
+          )}
           {item.lists?.length > 0 && <h2>Listings for Sale</h2>}
           {item.lists && (
             <div>
@@ -212,7 +216,7 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
                       ))}
                   </div>
 
-                  {list.lister != addresses[0] && (
+                  {addresses && list.lister != addresses[0] && (
                     <div className="form-item">
                       <Input
                         placeholder="amount"
@@ -237,11 +241,13 @@ const Partial = ({ item, addresses, updateItem, balance }) => {
                     </div>
                   )}
 
-                  {list.lister == addresses[0] && list.bids.length > 0 && (
-                    <Button onClick={confirmTokenSaleHandler}>
-                      Confirm Token Sale
-                    </Button>
-                  )}
+                  {addresses &&
+                    list.lister == addresses[0] &&
+                    list.bids.length > 0 && (
+                      <Button onClick={confirmTokenSaleHandler}>
+                        Confirm Token Sale
+                      </Button>
+                    )}
                 </div>
               ))}
             </div>

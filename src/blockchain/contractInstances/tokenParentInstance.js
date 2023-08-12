@@ -280,5 +280,6 @@ let tokenParentInstance;
 try {
   const address = await bidTokenInstance.methods.bidToken().call();
   tokenParentInstance = new web3.eth.Contract(abi, address);
+  console.log(address);
 } catch (e) {}
 export default tokenParentInstance;

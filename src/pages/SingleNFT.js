@@ -28,7 +28,7 @@ const SingleNFT = () => {
   const [balance, setBalance] = useState();
   const { setLoading } = useContext(MyContext);
 
-  window.ethereum.on("accountsChanged", async function () {
+  window.ethereum?.on("accountsChanged", async function () {
     setAddresses(await web3.eth.requestAccounts());
     let myBalance;
     if (!item || !item?.partial) return;
@@ -101,7 +101,7 @@ const SingleNFT = () => {
             });
           }
         }
-        if (owner == (await web3.eth.requestAccounts())[0])
+        if (addresses && owner == (await web3.eth.requestAccounts())[0])
           now.myNFTOwnership = percentage;
       }
 
@@ -136,7 +136,9 @@ const SingleNFT = () => {
 
   useEffect(() => {
     (async () => {
-      setAddresses(await web3.eth.requestAccounts());
+      try {
+        setAddresses(await web3.eth.requestAccounts());
+      } catch (e) {}
       const nftTokenAddr = await MarketplaceInstance.methods
         .nftTokenAddresses(itemId)
         .call();
@@ -210,13 +212,15 @@ const SingleNFT = () => {
                     ))}
                   </div>
                 )}
-                <h3 className="your-balance">
-                  <b> Your bidToken Balance: </b>
-                  {balance}
-                </h3>
+                {addresses && (
+                  <h3 className="your-balance">
+                    <b> Your bidToken Balance: </b>
+                    {balance}
+                  </h3>
+                )}
                 <div className="controls center">
                   <div className="line long"></div>
-                  {item.owner == addresses[0] && (
+                  {addresses && item.owner == addresses[0] && (
                     <Button
                       onClick={(e) =>
                         smartCall(
@@ -230,22 +234,24 @@ const SingleNFT = () => {
                       Allow Access
                     </Button>
                   )}
-                  {item.owner == addresses[0] && item.bidNumber > 0 && (
-                    <div className="center">
-                      <Button
-                        onClick={(e) =>
-                          smartCall(
-                            "methods.confirmSale",
-                            MarketplaceInstance,
-                            itemId
-                          )
-                        }
-                      >
-                        Confirm Sale to highest bidder
-                      </Button>
-                    </div>
-                  )}
-                  {item.owner == addresses[0] && (
+                  {addresses &&
+                    item.owner == addresses[0] &&
+                    item.bidNumber > 0 && (
+                      <div className="center">
+                        <Button
+                          onClick={(e) =>
+                            smartCall(
+                              "methods.confirmSale",
+                              MarketplaceInstance,
+                              itemId
+                            )
+                          }
+                        >
+                          Confirm Sale to highest bidder
+                        </Button>
+                      </div>
+                    )}
+                  {addresses && item.owner == addresses[0] && (
                     <div className="center">
                       <div className="form-item">
                         <Input
@@ -304,7 +310,7 @@ const SingleNFT = () => {
                       </div>
                     </div>
                   )}
-                  {item.owner == addresses[0] && item.sold && (
+                  {addresses && item.owner == addresses[0] && item.sold ? (
                     <div className="form-item">
                       <Input
                         onChange={(e) => setListPrice(e.target.value)}
@@ -335,8 +341,8 @@ const SingleNFT = () => {
                         List on Marketplace
                       </Button>
                     </div>
-                  )}
-                  {item.owner != addresses[0] && !item.sold && (
+                  ) : null}
+                  {addresses && item.owner != addresses[0] && !item.sold ? (
                     <div className="form-item">
                       <Input
                         placeholder="Value"
@@ -400,7 +406,7 @@ const SingleNFT = () => {
                         Bid
                       </Button>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </>
             )}

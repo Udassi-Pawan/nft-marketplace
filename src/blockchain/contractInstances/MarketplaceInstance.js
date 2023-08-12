@@ -476,7 +476,12 @@ const abi = [
 
 const MarketplaceInstance = new web3.eth.Contract(
   abi,
-  "0x4aF3aF659e40Db27C5482761BE41415c53551b3D"
+  "0x198B530D9bEb49E9e34791A482Ea8F0C9129C768"
 );
 
 export default MarketplaceInstance;
+
+// 0x4aF3aF659e40Db27C5482761BE41415c53551b3D old
+// 0x198B530D9bEb49E9e34791A482Ea8F0C9129C768 new
+
+// bidtoken new 0xf33a538F6586647A41Af327258eF354c85eAb577

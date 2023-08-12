@@ -43,7 +43,7 @@ const abi = [
 
 const bidTokenInstance = new web3.eth.Contract(
   abi,
-  "0x0922E66C5a7849091ECcEB1095b83db56eaC925c"
+  "0xf33a538F6586647A41Af327258eF354c85eAb577"
 );
 
 export default bidTokenInstance;

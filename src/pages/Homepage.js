@@ -37,6 +37,8 @@ const Homepage = ({ mynfts }) => {
         nftUri = await nftUri.json();
         const { name, image, description } = nftUri;
         now = { ...now, name, image, description };
+        console.log(items);
+
         setItems((e) => {
           console.log(addresses, now.owner, mynfts);
           if (mynfts && now.owner != addresses[0]) {
@@ -55,7 +57,7 @@ const Homepage = ({ mynfts }) => {
     <LoadingSpinner>
       <Layout className="homepage-parent">
         <div className="nft-cards">
-          {items.map((i) => (
+          {items?.map((i) => (
             <Link to={"/nft/" + i.nft + "-" + i.tokenId + "-" + i.itemId}>
               <Card
                 hoverable
@@ -71,7 +73,7 @@ const Homepage = ({ mynfts }) => {
               </Card>
             </Link>
           ))}
-          {items.length == 0 && <h1>Mint your First NFT now!</h1>}
+          {items?.length == 0 && <h1>Mint your First NFT now!</h1>}
         </div>
       </Layout>
     </LoadingSpinner>
